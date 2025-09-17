@@ -52,9 +52,15 @@
             margin-bottom: 1rem;
         }
 
-        h1 {
-            color: var(--primary-color);
-            font-size: 2rem;
+        h1{
+           font-size: 3rem;
+                margin: 0;
+                color:#007BFF;
+        }
+
+        h2 {
+            color: #484e54;
+            font-size: 1.8rem;
             margin: 0;
         }
 
@@ -104,11 +110,11 @@
                 <!-- <img src="{{ asset('storage/photos/fims_logo.png') }}" alt="FIMS Logo"> -->
                  <h1>FIMS</h1>
             </div>
-            <h1>Family Information Management System</h1>
+            <h2>Family Information Management System</h2>
         </header>
 
         <main class="welcome-content">
-            <p class="tagline">Easily store and manage your family's information.</p>
+            <!-- <p class="tagline">Easily store and manage your family's information.</p> -->
             <p class="description">
                 Welcome to FIMS, a simple and secure system to help you keep track of your family's details.
                 Get started by registering your family today.

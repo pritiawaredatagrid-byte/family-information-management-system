@@ -558,23 +558,30 @@
             resize: vertical;
             min-height: 100px;
         }
+.marital-status {
+  
+    display: flex;
+    flex-direction: column;
+}
 
-        .marital-status {
-            flex-direction: row;
-            align-items: center;
-            gap: 2rem;
-        }
+.radio-options {
+    display: flex;
+    gap: 1rem;
+}
 
-        .radio-group {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
+.radio-group {
+    display: flex;
+    align-items: center;
+}
 
-        .radio-group input[type="radio"] {
-            width: auto;
-            margin-right: 0.25rem;
-        }
+.status-error-container {
+    margin-top: 5px; 
+}
+
+.status-error-container label.error {
+    color: red;
+    font-size: 14px;
+}
 
         .hobbies-section {
             position: relative;
@@ -693,18 +700,19 @@
         .back-btn:hover {
             color: #000;
         }
-        .error-message {
-        color: var(--secondary-color);
-        font-size: 0.875rem;
-        margin-top: 0.25rem;
-    }
 
-    .jquery-error {
-        color: var(--secondary-color);
-        font-size: 0.875rem;
-        margin-top: 0.25rem;
-        display: block; 
-    }
+        .error-message {
+            color: var(--secondary-color);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        .jquery-error {
+            color: var(--secondary-color);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: block;
+        }
     </style>
 </head>
 
@@ -788,22 +796,29 @@
                         <p class="error-message">{{ $message }}</p>
                     @enderror
                 </div>
-               <div class="form-group">
-                 <label for="pincode">Pincode</label>
-                <input type="tel" name="pincode" id="pincode" placeholder="Enter Pincode" maxlength="6">
-                 @error('pincode')
-                <p class="error-message">{{ $message }}</p>
-                 @enderror
-               </div>
-                <div class="form-group marital-status">
-                    <label>Marital Status</label>
-                    <div class="radio-group">
-                        <input type="radio" name="status" value="married" id="married-radio">
-                        <label for="married-radio">Married</label>
-                        <input type="radio" name="status" value="unmarried" id="unmarried-radio">
-                        <label for="unmarried-radio">Unmarried</label>
-                    </div>
+                <div class="form-group">
+                    <label for="pincode">Pincode</label>
+                    <input type="tel" name="pincode" id="pincode" placeholder="Enter Pincode" maxlength="6">
+                    @error('pincode')
+                        <p class="error-message">{{ $message }}</p>
+                    @enderror
                 </div>
+               <div class="form-group">
+    <label>Marital Status</label>
+    <div class="marital-status">
+        <div class="radio-options">
+            <div class="radio-group">
+                <input type="radio" id="married" name="status" value="married">
+                <label for="married">Married</label>
+            </div>
+            <div class="radio-group">
+                <input type="radio" id="unmarried" name="status" value="unmarried">
+                <label for="unmarried">Unmarried</label>
+            </div>
+        </div>
+        <div class="status-error-container"></div>
+    </div>
+</div>
                 <div class="form-group full-width hidden" id="wedding-date-group">
                     <label for="wedding_date">Wedding Date</label>
                     <input type="date" name="wedding_date" id="wedding_date">
@@ -811,6 +826,7 @@
                 <div class="form-group hobbies-section full-width">
                     <label for="">Hobbies</label>
                     <div id="hobbies-container">
+
                     </div>
                     @error('hobbies.*')
                         <p class="error-message">{{ $message }}</p>
@@ -837,119 +853,138 @@
     </div>
 
 
-<script>
-$(document).ready(function() {
-
-    
-    $.validator.addMethod('isAdult', function(value, element, params) {
-        if (!value) return true;
-        const birthDate = new Date(value);
-        const cutOffDate = new Date(params);
-        return birthDate <= cutOffDate;
-    }, 'Family head must be 21 years or older.');
-
-    $.validator.addMethod('uniqueMobile', function(value, element) {
-        let isUnique = false;
-        $.ajax({
-            type: "POST",
-            url: "/check-mobile-uniqueness",
-            data: { mobile_number: value, _token: $('meta[name="csrf-token"]').attr('content') },
-            dataType: "json",
-            async: false,
-            success: function(response) {
-                isUnique = response.isUnique;
-            }
-        });
-        return isUnique;
-    }, 'This mobile number is already registered.');
-
-    $.validator.addMethod('filesize', function(value, element, param) {
-        return this.optional(element) || (element.files[0].size <= param * 1024);
-    }, 'File size must be less than {0} KB.');
-
-  
-    $('.form').validate({
-  
-        errorElement: 'span',
-        errorClass: 'jquery-error',
-        
-        rules: {
-            name: { required: true, maxlength: 50 },
-            surname: { required: true, maxlength: 50 },
-            birthdate: { required: true, date: true, isAdult: "2004-09-16" }, 
-            mobile_number: { required: true, numeric: true, digits: 10, uniqueMobile: true },
-            address: { required: true },
-            state: { required: true },
-            city: { required: true },
-            pincode: { required: true, digits: 6 },
-            status: { required: true },
-            'hobbies[]': { required: true },
-            photo: { required: true, extension: "jpg|png", filesize: 2048 }
-        },
-        messages: {
-            'hobbies[]': { required: "At least 1 hobby is required." }
-        }
-    });
+    <script>
+        $(document).ready(function () {
 
 
-    const weddingDateGroup = $('#wedding-date-group');
-    $('input[name="status"]').on('change', function() {
-        if ($(this).val() === 'married') {
-            weddingDateGroup.removeClass('hidden');
-        } else {
-            weddingDateGroup.addClass('hidden');
-        }
-    });
+            $.validator.addMethod('isAdult', function (value, element, params) {
+                if (!value) return true;
+                const birthDate = new Date(value);
+                const cutOffDate = new Date(params);
+                return birthDate <= cutOffDate;
+            }, 'Family head must be 21 years or older.');
 
-    $('.state').on('change', function() {
-        const idState = $(this).val();
-        $('.city').html('<option value="">Select City</option>');
-        if (idState) {
-            $.ajax({
-                url: "{{ route('get.cities') }}",
-                type: "POST",
-                data: {
-                    state_id: idState,
-                    _token: '{{ csrf_token() }}'
+            $.validator.addMethod('uniqueMobile', function (value, element) {
+                let isUnique = false;
+                $.ajax({
+                    type: "POST",
+                    url: "/check-mobile-uniqueness",
+                    data: { mobile_number: value, _token: $('meta[name="csrf-token"]').attr('content') },
+                    dataType: "json",
+                    async: false,
+                    success: function (response) {
+                        isUnique = response.isUnique;
+                    }
+                });
+                return isUnique;
+            }, 'This mobile number is already registered.');
+
+            $.validator.addMethod('filesize', function (value, element, param) {
+                return this.optional(element) || (element.files[0].size <= param * 1024);
+            }, 'File size must be less than {0} KB.');
+
+
+            $('.form').validate({
+
+                errorElement: 'span',
+                errorClass: 'jquery-error',
+
+                rules: {
+                    name: { required: true, maxlength: 50 },
+                    surname: { required: true, maxlength: 50 },
+                    birthdate: { required: true, date: true, isAdult: "2004-09-16" },
+                    mobile_number: { required: true, numeric: true, digits: 10, uniqueMobile: true },
+                    address: { required: true },
+                    state: { required: true },
+                    city: { required: true },
+                    pincode: { required: true, digits: 6 },
+                    status: { required: true },
+                    'hobbies[]': { required: true },
+                    photo: { required: true, extension: "jpg|png", filesize: 2048 }
                 },
-                dataType: 'json',
-                success: function(cities) {
-                    $.each(cities, function(key, value) {
-                        $('.city').append('<option value="' + value.city_name + '">' + value.city_name + '</option>');
+                messages: {
+                    'hobbies[]': { required: "At least 1 hobby is required." }
+                },
+                errorPlacement: function(error, element) {
+    if (element.attr("name") === "status") {
+        error.appendTo(".status-error-container");
+    } else {
+        error.insertAfter(element);
+    }
+},
+                 errorPlacement: function(error, element) {
+    
+    if (element.attr("name").startsWith("hobbies")) {
+    
+        $("#hobbies-container .error-message").remove();
+
+        error.addClass("error-message").appendTo("#hobbies-container");
+    } else {
+
+        error.insertAfter(element);
+    }
+}
+            });
+
+
+            const weddingDateGroup = $('#wedding-date-group');
+            $('input[name="status"]').on('change', function () {
+                if ($(this).val() === 'married') {
+                    weddingDateGroup.removeClass('hidden');
+                } else {
+                    weddingDateGroup.addClass('hidden');
+                }
+            });
+
+            $('.state').on('change', function () {
+                const idState = $(this).val();
+                $('.city').html('<option value="">Select City</option>');
+                if (idState) {
+                    $.ajax({
+                        url: "{{ route('get.cities') }}",
+                        type: "POST",
+                        data: {
+                            state_id: idState,
+                            _token: '{{ csrf_token() }}'
+                        },
+                        dataType: 'json',
+                        success: function (cities) {
+                            $.each(cities, function (key, value) {
+                                $('.city').append('<option value="' + value.city_name + '">' + value.city_name + '</option>');
+                            });
+                        }
                     });
                 }
             });
-        }
-    });
 
-    const hobbiesContainer = $('#hobbies-container');
+            const hobbiesContainer = $('#hobbies-container');
 
-    function addHobbyRow() {
-        const newHobbyRow = `
+            function addHobbyRow() {
+                const newHobbyRow = `
             <div class="hobby-row">
                 <input type="text" name="hobbies[]" placeholder="Enter hobby here" class="hobby-input">
                 <button type="button" class="btn btn-remove-hobby">Remove</button>
             </div>
         `;
-        hobbiesContainer.append(newHobbyRow);
-    }
+                hobbiesContainer.append(newHobbyRow);
+            }
 
-    $('#addHobbyBtn').on('click', addHobbyRow);
+            $('#addHobbyBtn').on('click', addHobbyRow);
 
-    hobbiesContainer.on('click', '.btn-remove-hobby', function() {
-        if (hobbiesContainer.find('.hobby-row').length > 1) {
-            $(this).closest('.hobby-row').remove();
-        }
-    });
+            hobbiesContainer.on('click', '.btn-remove-hobby', function () {
+                if (hobbiesContainer.find('.hobby-row').length > 1) {
+                    $(this).closest('.hobby-row').remove();
+                }
+            });
 
-    $('#removeAllHobbiesBtn').on('click', function() {
-        hobbiesContainer.empty();
-        addHobbyRow();
-    });
+            $('#removeAllHobbiesBtn').on('click', function () {
+                hobbiesContainer.empty();
+                addHobbyRow();
+            });
 
-    addHobbyRow();
-});
-</script>
+            addHobbyRow();
+        });
+    </script>
 </body>
 
 </html>

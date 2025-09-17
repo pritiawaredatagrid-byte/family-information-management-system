@@ -85,7 +85,7 @@
 
         .links a {
             text-decoration: none;
-            color: #555;
+            color: #007BFF;
             font-size: 1rem;
             font-weight: 500;
             transition: color 0.3s ease;
@@ -104,6 +104,10 @@
             color: #555;
         }
 
+        .logo{
+         color:#007BFF
+        }
+
     </style>
 </head>
 
@@ -120,11 +124,6 @@
     </nav>
 
     <div class=" mx-auto p-6">
-
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl font-bold text-gray-600">Searched Data</h1>
-        </div>
-
         <!-- Table Wrapper -->
         <div class="bg-white rounded-xl shadow">
             <table class=" w-full text-sm text-gray-700">
