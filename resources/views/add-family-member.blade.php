@@ -67,7 +67,7 @@
             margin-bottom: 0.7rem;
             border: 0.1rem solid #757575;
             font-size: 0.95rem;
-            /* fixed size for inputs */
+           
         }
 
         .Family-Member-body form div input:focus {
