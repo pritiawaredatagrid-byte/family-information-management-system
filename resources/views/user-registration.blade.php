@@ -571,6 +571,7 @@
 
 .radio-group {
     display: flex;
+    flex-direction:column;
     align-items: center;
 }
 
@@ -717,6 +718,7 @@
 </head>
 
 <body class="registration-body">
+    
     <div class="card">
         <!-- <a href="/home-page" class="back-btn" aria-label="Go back to the previous page">&#8592; Back</a> -->
         <div style="display:flex justify-content:space-between">
@@ -810,13 +812,12 @@
             <div class="radio-group">
                 <input type="radio" id="married" name="status" value="married">
                 <label for="married">Married</label>
-            </div>
-            <div class="radio-group">
                 <input type="radio" id="unmarried" name="status" value="unmarried">
                 <label for="unmarried">Unmarried</label>
             </div>
-        </div>
         <div class="status-error-container"></div>
+
+        </div>
     </div>
 </div>
                 <div class="form-group full-width hidden" id="wedding-date-group">
@@ -906,11 +907,12 @@
                     'hobbies[]': { required: "At least 1 hobby is required." }
                 },
                 errorPlacement: function(error, element) {
-    if (element.attr("name") === "status") {
-        error.appendTo(".status-error-container");
-    } else {
-        error.insertAfter(element);
-    }
+                    var abc = element.closest('radio-options').find(".status-error-container");
+                    if (element.attr("name") == "status") {
+                        abc.html(error);
+                    } else {
+                        error.insertAfter(element);
+                    }
 },
                  errorPlacement: function(error, element) {
     
